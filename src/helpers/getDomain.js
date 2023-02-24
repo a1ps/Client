@@ -8,7 +8,7 @@ import { isProduction } from 'helpers/isProduction'
  */
 export const getDomain = () => {
   const prodUrl = 'https://sopra-fs23-ldevil-server.ew.r.appspot.com/' // TODO: insert your prod url for server (once deployed)
-  const devUrl = 'http://localhost:8080'
+  const devUrl = 'http://192.168.1.4:8080'
 
   return isProduction() ? prodUrl : devUrl
 }

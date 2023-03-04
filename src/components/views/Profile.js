@@ -2,33 +2,24 @@ import {useEffect, useState} from 'react';
 import {api, handleError} from 'helpers/api';
 import {Spinner} from 'components/ui/Spinner';
 import {Button} from 'components/ui/Button';
-import {useHistory, useParams} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 
-const Player = ({user, goToProfile}) => (
+const Player = ({user}) => (
   <div className="player container">
     <div className="player username">{user.username}</div>
     <div className="player name">{user.name}</div>
-    <div className="button center ">
-    <Button
-      width="100%"
-      
-      onClick={() => { goToProfile(user.id)}}
-    >
-      Go to Profile
-    </Button></div>
     <div className="player id">id: {user.id}</div>
   </div>
 );
 
 Player.propTypes = {
-  user: PropTypes.object,
-  goToProfile : PropTypes.func
+  user: PropTypes.object
 };
 
-const Game = () => {
+const Profile = () => {
   // use react-router-dom's hook to access the history
   const history = useHistory();
 
@@ -38,9 +29,9 @@ const Game = () => {
   // a component can have as many state variables as you like.
   // more information can be found under https://reactjs.org/docs/hooks-state.html
   const [users, setUsers] = useState(null);
+  
 
   const logout = () => {
-    
     localStorage.removeItem('token');
     history.push('/login');
   }
@@ -51,6 +42,7 @@ const Game = () => {
   // for more information on the effect hook, please see https://reactjs.org/docs/hooks-effect.html
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
+
     async function fetchData() {
       try {
         const response = await api.get('/users');
@@ -62,7 +54,6 @@ const Game = () => {
 
         // Get the returned users and update the state.
         setUsers(response.data);
-        
 
         // This is just some data for you to see what is available.
         // Feel free to remove it.
@@ -80,16 +71,11 @@ const Game = () => {
       }
     }
 
-    function UsersId() {
-      const params = useParams();
-      return params.id;
-    }
-
     fetchData();
   }, [users]);
 
-  const goToProfile = () => {
-    history.push('/profile');
+  const goToHomePage = () => {
+    history.push('/game');
   }
 
   let content = <Spinner/>;
@@ -99,9 +85,8 @@ const Game = () => {
       <div className="game">
         <ul className="game user-list">
           {users.map(user => (
-            <Player user={user} key={user.id} goToProfile={goToProfile}/>
+            <Player user={user} key={user.id}/>
           ))}
-          
         </ul>
         <Button
           width="100%"
@@ -123,13 +108,13 @@ const Game = () => {
       <div className="login button-container">
         <Button
           width="100%"
-          onClick={() => goToProfile()}
+          onClick={() => goToHomePage()}
         >
-          Go to Profile
+          Go to Home Page
         </Button>
       </div>
     </BaseContainer>
   );
 }
 
-export default Game;
+export default Profile;

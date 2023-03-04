@@ -3,7 +3,7 @@ import {api, handleError} from 'helpers/api';
 import User from 'models/User';
 import {useHistory} from 'react-router-dom';
 import {Button} from 'components/ui/Button';
-import 'styles/views/Login.scss';
+import 'styles/views/NewUser.scss';
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 
@@ -34,25 +34,24 @@ FormField.propTypes = {
   value: PropTypes.string,
   onChange: PropTypes.func
 };
-function loggedInUser(data){
-  return new User(data);
-} 
 
-const Login = props => {
+const NewUser = props => {
   const history = useHistory();
-  const [name, setName] = useState(null);
+  const [Password, setName] = useState(null);
   const [username, setUsername] = useState(null);
 
-  const doLogin = async () => {
+  const createUser = async () => {
     try {
-      const requestBody = JSON.stringify({username, name});
-      const response = await api.post('/login', requestBody);
+      const requestBody = ({
+        "username" : username, 
+        "name" : Password
+      });
+      const response = await api.post('/users', requestBody);
 
       // Get the returned user and update a new object.
-      const user = loggedInUser(response.data);
+      const user = new User(response.data);
 
       // Store the token into the local storage.
-      localStorage.setItem('id', user.id);
       localStorage.setItem('token', user.token);
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
@@ -60,11 +59,6 @@ const Login = props => {
     } catch (error) {
       alert(`Something went wrong during the login: \n${handleError(error)}`);
     }
-  };
-
-
-  const doCreateUser = async () => {
-    history.push(`/createUser`);
   };
 
   return (
@@ -78,28 +72,19 @@ const Login = props => {
           />
           <FormField
             label="Password"
-            value={name}
-            onChange={n => setName(n)}
+            value={Password}
+            onChange={p => setName(p)}
           />
-          <div className="button container">
+          <div className="create button-container">
             <Button
-              disabled={!username || !name}
+              disabled={!username || !Password}
               width="100%"
-              onClick={() => doLogin()}
+              onClick={() => createUser()}
             >
-              Login
-            </Button>
-          </div>
-          <div className="login button-container">
-            <Button
-              width="100%"
-              onClick={() => doCreateUser()}
-            >
-              Create New Account
+              Create Account
             </Button>
           </div>
         </div>
-        
       </div>
     </BaseContainer>
   );
@@ -109,5 +94,4 @@ const Login = props => {
  * You can get access to the history object's properties via the withRouter.
  * withRouter will pass updated match, location, and history props to the wrapped component whenever it renders.
  */
-export default Login;
-
+export default NewUser;

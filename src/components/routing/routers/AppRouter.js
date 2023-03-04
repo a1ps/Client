@@ -3,10 +3,13 @@ import {GameGuard} from "components/routing/routeProtectors/GameGuard";
 import GameRouter from "components/routing/routers/GameRouter";
 import {LoginGuard} from "components/routing/routeProtectors/LoginGuard";
 import Login from "components/views/Login";
+import NewUser from "components/views/CreateUser";
+import Profile from "components/views/Profile";
 
 /**
  * Main router of your application.
- * In the following class, different routes are rendered. In our case, there is a Login Route with matches the path "/login"
+ * In the following class, different routes are rendered. 
+ * In our case, there is a Login Route with matches the path "/login"
  * and another Router that matches the route "/game".
  * The main difference between these two routes is the following:
  * /login renders another component without any sub-route
@@ -26,6 +29,19 @@ const AppRouter = () => {
           <LoginGuard>
             <Login/>
           </LoginGuard>
+        </Route>
+        <Route exact path="/logout">
+          <Redirect to="/login"/>
+        </Route>
+        <Route exact path="/createUser">
+          {/* New user guard maybe */}
+          <NewUser/> 
+          {/* New user guard maybe */}
+        </Route>
+        <Route exact path="/profile">
+          
+          <Profile/>
+
         </Route>
         <Route exact path="/">
           <Redirect to="/game"/>

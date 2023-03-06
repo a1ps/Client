@@ -34,14 +34,12 @@ const AppRouter = () => {
           <Redirect to="/login"/>
         </Route>
         <Route exact path="/createUser">
-          {/* New user guard maybe */}
           <NewUser/> 
-          {/* New user guard maybe */}
         </Route>
-        <Route exact path="/profile">
-          
-          <Profile/>
-
+        <Route exact path="/profile/:userid">
+        <GameGuard>
+            <Profile/>
+          </GameGuard>
         </Route>
         <Route exact path="/">
           <Redirect to="/game"/>

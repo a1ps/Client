@@ -7,28 +7,50 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 
-const Player = ({user, profileLink}) => (
-  <div className="player container">
-    <div className="primary-button" onClick={() => {profileLink(user.id)}}>{user.username}</div>
-    <div className="player id"> {user.status} </div>
-  </div>
+const Player = ({user}) => (
+
+  <BaseContainer>
+      <p className="game paragraph">
+      Username: {user.username}
+      </p>
+      <p className="game paragraph">
+      Creation Date: {user.creationDate}
+      </p>
+      <p className="game paragraph">
+      Status: {user.status}
+      </p>
+      <p className="game paragraph">
+      Birthday: {BirthdayDisplay(user)}
+      </p>
+  </BaseContainer>
 );
 
+function BirthdayDisplay(user){
+  if(user.birthDate == null){
+    return "None of your business";
+  }else{
+    return user.birthDate;
+  }
+}
+
 Player.propTypes = {
-  user: PropTypes.object,
-  profileLink : PropTypes.func
+  user: PropTypes.object
 };
 
-const Game = () => {
+const Profile = () => {
   // use react-router-dom's hook to access the history
   const history = useHistory();
+  //const url = window.location.href;
+  const url = window.location.href;
+  //location.hrf to get url then get id by string operators 
 
   // define a state variable (using the state hook).
   // if this variable changes, the component will re-render, but the variable will
   // keep its value throughout render cycles.
   // a component can have as many state variables as you like.
   // more information can be found under https://reactjs.org/docs/hooks-state.html
-  const [users, setUsers] = useState(null);
+  const [user, setUser] = useState(null);
+  
 
   
 
@@ -38,9 +60,13 @@ const Game = () => {
   // for more information on the effect hook, please see https://reactjs.org/docs/hooks-effect.html
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
+
     async function fetchData() {
       try {
-        const response = await api.get('/users');
+        const id = url.substring(url.lastIndexOf('/') + 1);
+        console.log(id);
+        const response = await api.get( `/users/${id}`);
+
 
         // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
@@ -48,15 +74,14 @@ const Game = () => {
         //await new Promise(resolve => setTimeout(resolve, 1000));
 
         // Get the returned users and update the state.
-        setUsers(response.data);
-        
+        setUser(response.data);
 
         // This is just some data for you to see what is available.
         // Feel free to remove it.
-        /* console.log('request to:', response.request.responseURL);
-        //console.log('status code:', response.status);
+        console.log('request to:', response.request.responseURL);
+        console.log('status code:', response.status);
         console.log('status text:', response.statusText);
-        console.log('requested data:', response.data); */
+        console.log('requested data:', response.data);
 
         // See here to get more data.
         console.log(response);
@@ -68,40 +93,21 @@ const Game = () => {
     }
 
     fetchData();
-  }, [users]);
+  }, [url]);
 
-  const goToProfile = (userid) => {
-    history.push(`/profile/${userid}`);
+  const goToHomePage = () => {
+    history.push('/game');
   }
 
-  const editMyProfile = () => {
-    history.push(`/profile/${localStorage.getItem('id')}`); 
-  }
 
-  const logout = () => {
-    const id = localStorage.getItem('id');
-    api.put('/logout', id);
-    localStorage.removeItem('token');
-    localStorage.removeItem('id');
-    history.push('/login');
-   }
+  let content = "This user does not exist.";
 
-  let content = <Spinner/>;
-
-  if (users) {
+  if (user) {
     content = (
       <div className="game">
         <ul className="game user-list">
-          {users.map(user => (
-            <Player user={user} key = {user.id} profileLink={goToProfile}/>
-          ))}
+            <Player user={user}/>
         </ul>
-        <Button
-          width="100%"
-          onClick={() => logout()}
-        >
-          Logout
-        </Button>
       </div>
     );
   }
@@ -110,19 +116,19 @@ const Game = () => {
     <BaseContainer className="game container">
       <h2>Happy Coding!</h2>
       <p className="game paragraph">
-        User overview:
+       User Profile:
       </p>
       {content}
       <div className="login button-container">
-      <Button
+        <Button
           width="100%"
-          onClick={() => editMyProfile()}
+          onClick={() => goToHomePage()}
         >
-          Edit my Profile
+          Go to Home Page
         </Button>
       </div>
     </BaseContainer>
   );
 }
 
-export default Game;
+export default Profile;

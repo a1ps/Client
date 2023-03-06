@@ -8,12 +8,30 @@ import PropTypes from "prop-types";
 import "styles/views/Game.scss";
 
 const Player = ({user}) => (
-  <div className="player container">
-    <div className="player username">{user.username}</div>
-    <div className="player name">{user.name}</div>
-    <div className="player id">id: {user.id}</div>
-  </div>
+
+  <BaseContainer>
+      <p className="game paragraph">
+      Username: {user.username}
+      </p>
+      <p className="game paragraph">
+      Creation Date: {user.creationDate}
+      </p>
+      <p className="game paragraph">
+      Status: {user.status}
+      </p>
+      <p className="game paragraph">
+      Birthday: {BirthdayDisplay(user)}
+      </p>
+  </BaseContainer>
 );
+
+function BirthdayDisplay(user){
+  if(user.birthDate == null){
+    return "None of your buisness";
+  }else{
+    return user.birthDate;
+  }
+}
 
 Player.propTypes = {
   user: PropTypes.object
@@ -22,19 +40,19 @@ Player.propTypes = {
 const Profile = () => {
   // use react-router-dom's hook to access the history
   const history = useHistory();
+  //const url = window.location.href;
+  const url = window.location.href;
+  //location.hrf to get url then get id by string operators 
 
   // define a state variable (using the state hook).
   // if this variable changes, the component will re-render, but the variable will
   // keep its value throughout render cycles.
   // a component can have as many state variables as you like.
   // more information can be found under https://reactjs.org/docs/hooks-state.html
-  const [users, setUsers] = useState(null);
+  const [user, setUser] = useState(null);
   
 
-  const logout = () => {
-    localStorage.removeItem('token');
-    history.push('/login');
-  }
+  
 
   // the effect hook can be used to react to change in your component.
   // in this case, the effect hook is only run once, the first time the component is mounted
@@ -45,15 +63,18 @@ const Profile = () => {
 
     async function fetchData() {
       try {
-        const response = await api.get('/users');
+        const id = url.substring(url.lastIndexOf('/') + 1);
+        console.log(id);
+        const response = await api.get( `/users/${id}`);
+
 
         // delays continuous execution of an async operation for 1 second.
         // This is just a fake async call, so that the spinner can be displayed
         // feel free to remove it :)
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        //await new Promise(resolve => setTimeout(resolve, 1000));
 
         // Get the returned users and update the state.
-        setUsers(response.data);
+        setUser(response.data);
 
         // This is just some data for you to see what is available.
         // Feel free to remove it.
@@ -72,28 +93,21 @@ const Profile = () => {
     }
 
     fetchData();
-  }, [users]);
+  }, [url]);
 
   const goToHomePage = () => {
     history.push('/game');
   }
 
-  let content = <Spinner/>;
 
-  if (users) {
+  let content = "This user does not exist.";
+
+  if (user) {
     content = (
       <div className="game">
         <ul className="game user-list">
-          {users.map(user => (
-            <Player user={user} key={user.id}/>
-          ))}
+            <Player user={user}/>
         </ul>
-        <Button
-          width="100%"
-          onClick={() => logout()}
-        >
-          Logout
-        </Button>
       </div>
     );
   }
@@ -102,7 +116,7 @@ const Profile = () => {
     <BaseContainer className="game container">
       <h2>Happy Coding!</h2>
       <p className="game paragraph">
-        Get all users from secure endpoint:
+       User Profile:
       </p>
       {content}
       <div className="login button-container">

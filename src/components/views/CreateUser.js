@@ -37,14 +37,14 @@ FormField.propTypes = {
 
 const NewUser = props => {
   const history = useHistory();
-  const [Password, setName] = useState(null);
+  const [name, setName] = useState(null);
   const [username, setUsername] = useState(null);
 
   const createUser = async () => {
     try {
       const requestBody = ({
         "username" : username, 
-        "name" : Password
+        "name" : name
       });
       const response = await api.post('/users', requestBody);
 
@@ -72,13 +72,13 @@ const NewUser = props => {
             onChange={un => setUsername(un)}
           />
           <FormField
-            label="Password"
-            value={Password}
-            onChange={p => setName(p)}
+            label="Name"
+            value={name}
+            onChange={n => setName(n)}
           />
           <div className="create button-container">
             <Button
-              disabled={!username || !Password}
+              disabled={!username || !name}
               width="100%"
               onClick={() => createUser()}
             >

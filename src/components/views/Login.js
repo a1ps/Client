@@ -46,7 +46,7 @@ const Login = props => {
   const doLogin = async () => {
     try {
       const requestBody = JSON.stringify({username, name});
-      const response = await api.put('/login', requestBody);
+      const response = await api.post('/login', requestBody);
 
       // Get the returned user and update a new object.
       const user = loggedInUser(response.data);
@@ -78,7 +78,7 @@ const Login = props => {
             onChange={un => setUsername(un)}
           />
           <FormField
-            label="Password"
+            label="Name"
             value={name}
             onChange={n => setName(n)}
           />

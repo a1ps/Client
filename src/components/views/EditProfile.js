@@ -25,20 +25,16 @@ FormField.propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func
   };
-
+/*Check for optional birthday => if not given, set to null 
+  so far if birthday is left empty it returnes null pointer error 
+ */
 const EditProfile = () => {
   // use react-router-dom's hook to access the history
   const history = useHistory();
-
-  // define a state variable (using the state hook).
-  // if this variable changes, the component will re-render, but the variable will
-  // keep its value throughout render cycles.
-  // a component can have as many state variables as you like.
-  // more information can be found under https://reactjs.org/docs/hooks-state.html
-    const [newUserName, setNewUserName] = useState(null);
-    const [newBirthDate, setNewBirthDate] = useState(null);
-    const [userName, setUserName] = useState(null);
-    const [birthDate, setBirthDate] = useState(null);
+  const [newUserName, setNewUserName] = useState(null);
+  const [newBirthDate, setNewBirthDate] = useState(null);
+  const [userName, setUserName] = useState(null);
+  const [birthDate, setBirthDate] = useState(null);
   
 
   
@@ -54,23 +50,10 @@ const EditProfile = () => {
       try {
         const id = localStorage.getItem('id');
         const response = await api.get(`/users/${id}`);
-        console.log("Response:", response);
         setUserName(response.data.username);
         setBirthDate(response.data.birthDate);
-       
-
-
-        // delays continuous execution of an async operation for 1 second.
-        // This is just a fake async call, so that the spinner can be displayed
-        // feel free to remove it :)
-        //await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // Get the returned users and update the state.
-        //setUser(response.data);
-        
       } catch (error) {
         console.error(`Something went wrong while fetching the users: \n${handleError(error)}`);
-        console.error("Details:", error);
         alert("Something went wrong while fetching the users! See the console for details.");
       }
     }
@@ -83,14 +66,22 @@ const EditProfile = () => {
   };
 
   const saveChanges = async () => {
+    try {
+      if (newBirthDate == null){
+        setNewBirthDate(null);
+      }
       const requestBody = ({
-          "username": newUserName,
-          "birthDate": newBirthDate,
-        });
-        const response = await api.put( `/editProfile/${localStorage.getItem('id')}`, requestBody);
-          console.log(" response ", response);
-          alert("Changes saved!");
-          history.push('/game');
+        "username": newUserName,
+        "birthDate": newBirthDate,
+      }); 
+      await api.put( `/user/${localStorage.getItem('id')}`, requestBody);
+        //console.log(" response ", response);
+        alert("Changes saved!");
+        history.push(`/profile/${localStorage.getItem('id')}`);
+    } catch (error) {
+      alert(`Something went wrong: \n${handleError(error)}`);
+    }
+    
   };
 
 
@@ -106,7 +97,7 @@ const EditProfile = () => {
       </p>
       <FormField
         value={newUserName}
-        onChange={n => setNewUserName(n)}
+        onChange={nun => setNewUserName(nun)}
         />
       <p className="game paragraph">
         Your Current Birthday: {birthDate}
@@ -115,7 +106,7 @@ const EditProfile = () => {
         <FormField
           type="date"
           value={newBirthDate}
-          onChange={n => setNewBirthDate(n)}
+          onChange={b => setNewBirthDate(b)}
           />
       </div>
     </div>

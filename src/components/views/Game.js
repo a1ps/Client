@@ -10,7 +10,9 @@ import "styles/views/Game.scss";
 const Player = ({user, profileLink}) => (
   <div className="player container">
     <div className="primary-button" onClick={() => {profileLink(user.id)}}>{user.username}</div>
-    <div className="player id"> {user.status} </div>
+    <div className="player name"> {user.name} </div>
+    <div className="player status"> {user.status} </div>
+    <div className="player id">id: {user.id} </div>
   </div>
 );
 

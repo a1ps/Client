@@ -74,7 +74,7 @@ const EditProfile = () => {
         "username": newUserName,
         "birthDate": newBirthDate,
       }); 
-      await api.put( `/user/${localStorage.getItem('id')}`, requestBody);
+      await api.put( `/users/${localStorage.getItem('id')}`, requestBody);
         //console.log(" response ", response);
         alert("Changes saved!");
         history.push(`/profile/${localStorage.getItem('id')}`);

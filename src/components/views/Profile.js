@@ -85,9 +85,8 @@ const Profile = () => {
         // See here to get more data.
         console.log(response);
       } catch (error) {
-        console.error(`Something went wrong while fetching the users: \n${handleError(error)}`);
-        console.error("Details:", error);
-        alert("Something went wrong while fetching the users! See the console for details.");
+        alert(`This user does not exist: \n${handleError(error)}`);
+        
       }
     }
 

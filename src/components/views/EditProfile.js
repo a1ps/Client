@@ -25,9 +25,7 @@ FormField.propTypes = {
     value: PropTypes.string,
     onChange: PropTypes.func
   };
-/*Check for optional birthday => if not given, set to null 
-  so far if birthday is left empty it returnes null pointer error 
- */
+
 const EditProfile = () => {
   // use react-router-dom's hook to access the history
   const history = useHistory();
@@ -36,13 +34,6 @@ const EditProfile = () => {
   const [userName, setUserName] = useState(null);
   const [birthDate, setBirthDate] = useState(null);
   
-
-  
-
-  // the effect hook can be used to react to change in your component.
-  // in this case, the effect hook is only run once, the first time the component is mounted
-  // this can be achieved by leaving the second argument an empty array.
-  // for more information on the effect hook, please see https://reactjs.org/docs/hooks-effect.html
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
 
@@ -75,7 +66,6 @@ const EditProfile = () => {
         "birthDate": newBirthDate,
       }); 
       await api.put( `/users/${localStorage.getItem('id')}`, requestBody);
-        //console.log(" response ", response);
         alert("Changes saved!");
         history.push(`/profile/${localStorage.getItem('id')}`);
     } catch (error) {

@@ -43,11 +43,7 @@ const Game = () => {
     async function fetchData() {
       try {
         const response = await api.get('/users');
-
-        // delays continuous execution of an async operation for 1 second.
-        // This is just a fake async call, so that the spinner can be displayed
-        // feel free to remove it :)
-
+        
         // Get the returned users and update the state.
         setUsers(response.data);
       } catch (error) {
